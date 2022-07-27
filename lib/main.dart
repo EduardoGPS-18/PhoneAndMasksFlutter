@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:test_dropdown/custom_drop_down_menu_item.dart';
 import 'package:test_dropdown/ddi_picker.dart';
@@ -49,8 +50,10 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  _updateMask({bool checkIfEquals = true}) {
-    if (checkIfEquals && phoneController.text.removePhoneMask() == lastPhone.removePhoneMask()) {
+  _updateMask({bool returnIfIsSameText = true}) {
+    final phoneIsTheSame = phoneController.text.removePhoneMask() == lastPhone.removePhoneMask();
+
+    if (!returnIfIsSameText && phoneIsTheSame) {
       return;
     }
     final phone = phoneController.text.removePhoneMask();
@@ -89,7 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     setState(() {
                       countryData = country;
                     });
-                    _updateMask(checkIfEquals: false);
+                    _updateMask(returnIfIsSameText: false);
                   },
                 ),
                 Expanded(
@@ -97,6 +100,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: TextFormField(
                       controller: phoneController,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     ),
                   ),
                 ),
